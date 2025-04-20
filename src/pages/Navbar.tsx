@@ -203,14 +203,14 @@ function Navbar({cur_url}:{cur_url:string}) {
                 </div>
                 <div className="hidden sm:ml-6 sm:flex sm:items-center">
                   {/* For demo purposes only */}
-                  <button
+                  {/* <button
                     onClick={toggleUserType}
                     className="mr-4 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-md text-sm font-medium hover:bg-indigo-200"
                   >
                     {userType === "student"
                       ? "Switch to Mentor View"
                       : "Switch to Student View"}
-                  </button>
+                  </button> */}
     
                   {/* Search button */}
                   <button className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -237,7 +237,9 @@ function Navbar({cur_url}:{cur_url:string}) {
                       <button className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <span className="sr-only">Open user menu</span>
                         <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                          <a href="/profile">
                           <User className="h-5 w-5" />
+                          </a>
                         </div>
                       </button>
                     </div>

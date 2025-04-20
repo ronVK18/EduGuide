@@ -20,6 +20,7 @@ import {
   MapPin
 } from 'lucide-react';
 import Navbar from './Navbar';
+import { redirect } from 'react-router-dom';
 
 export default function Mentor() {
   // State for search and filters
@@ -176,16 +177,19 @@ export default function Mentor() {
 
   // Handle starting a chat
   const handleStartChat = (mentorId) => {
-    setActiveMentorChat(mentorId);
-    // In a real app, this would open a chat interface or redirect to a chat page
-    setTimeout(() => {
-      setActiveMentorChat(null);
-      alert(`Chat started with mentor ID: ${mentorId}`);
-    }, 1000);
+    console.log(`Starting chat with mentor ID: ${mentorId}`);
+    redirect('/chat');
+    // setActiveMentorChat(mentorId);
+    // // In a real app, this would open a chat interface or redirect to a chat page
+    // setTimeout(() => {
+    //   setActiveMentorChat(null);
+    //   alert(`Chat started with mentor ID: ${mentorId}`);
+    // }, 1000);
   };
 
   // Handle starting a video call
   const handleStartVideoCall = (mentorId) => {
+    redirect('/video');
     setActiveVideoCall(mentorId);
     // In a real app, this would initialize a video call or redirect to a video call page
     setTimeout(() => {
@@ -401,10 +405,10 @@ export default function Mentor() {
                             <span className="animate-pulse">Connecting...</span>
                           </>
                         ) : (
-                          <>
+                          <a href='/chat'>
                             <MessageSquare className="h-4 w-4 mr-1" />
                             Chat
-                          </>
+                          </a>
                         )}
                       </button>
                       
@@ -422,7 +426,7 @@ export default function Mentor() {
                         ) : (
                           <>
                             <Video className="h-4 w-4 mr-1" />
-                            Call
+                            <a href="/video">Call</a>
                           </>
                         )}
                       </button>

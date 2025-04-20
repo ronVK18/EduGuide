@@ -7,6 +7,8 @@ import VideoCall from "./pages/VideoCall"
 import Mentor from "./pages/Mentor"
 import Navbar from "./pages/Navbar"
 import Profile from "./pages/Profile"
+import Course from "./pages/Courses"
+import Chat from "./pages/Chat"
 
 function App() {
   
@@ -19,6 +21,8 @@ function App() {
       <Route path="/yt" element=<Youtube/> />
       <Route path="/jobs" element=<JobSearch/> />
       <Route path="/video" element=<VideoCall/> />
+      <Route path="/chat" element=<Chat/> />
+      <Route path="/courses" element=<Course/> />
       <Route path="/mentors" element=<Mentor/> />
       <Route path="/profile" element=<Profile/> />
     </Routes>
