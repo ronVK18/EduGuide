@@ -16,17 +16,20 @@ import {
   Clock,
   Star
 } from 'lucide-react';
+import { useUser } from '@clerk/clerk-react';
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState('overview');
-  
+  const user=useUser();
+  const date=user.user?.createdAt
+  console.log(date?.toDateString)
   // Mock user data
   const userData = {
-    name: "Alex Johnson",
-    email: "alex@example.com",
+    name: user.user?.fullName,
+    email: user.user?.emailAddresses[0].emailAddress,
     phone: "+1 (555) 123-4567",
     location: "New York, NY",
-    joinDate: "January 2023",
+    joinDate: date?.toDateString(),
     bio: "Recent computer science graduate passionate about data science and software development. Looking to leverage my technical skills and educational background to launch my career in tech.",
     resumeScore: 85,
     profileCompletion: 90,

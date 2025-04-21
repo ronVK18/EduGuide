@@ -413,7 +413,7 @@ export default function Mentor() {
                       </button>
                       
                       <button
-                        onClick={() => handleStartVideoCall(mentor.id)}
+                        
                         className={`flex-1 flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
                           activeVideoCall === mentor.id ? 'opacity-75 cursor-not-allowed' : ''
                         }`}
@@ -424,10 +424,10 @@ export default function Mentor() {
                             <span className="animate-pulse">Connecting...</span>
                           </>
                         ) : (
-                          <>
-                            <Video className="h-4 w-4 mr-1" />
-                            <a href="/video">Call</a>
-                          </>
+                          <div>
+                            
+                            <a href="/video"><Video className="h-4 w-4 mr-1" /> Call</a>
+                          </div>
                         )}
                       </button>
                     </div>

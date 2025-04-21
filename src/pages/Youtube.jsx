@@ -21,7 +21,7 @@ import {
   CheckCircle,
   AlertCircle 
 } from 'lucide-react';
-
+import Navbar from './Navbar';
 // Add these new components to handle the YouTube video summarization functionality
 const VideoSummaryGenerator = () => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
@@ -516,11 +516,12 @@ export default function HomeDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navbar cur_url='yt' />
       {/* Header */}
       {/* ... [keep header code as is] */}
       
       {/* Main Content */}
-      <main className="py-6">
+      <main className="py-6 -mt-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Welcome banner */}
           {/* ... [keep welcome banner code as is] */}

@@ -129,14 +129,14 @@ export default function EduGuideLandingPage() {
               <SignedOut>
                 <div className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium  bg-white hover:bg-gray-100">
                   <SignInButton 
-                  
+                    forceRedirectUrl={'/home'}
                   />
                 </div>
               </SignedOut>
               <SignedIn>
                 <div className="flex items-center  justify-center space-x-2 bg-white hover:bg-gray-100  py-2 rounded-md text-sm font-medium text-gray-700 ">
                   <UserButton
-                    afterSignOutUrl="/"
+                    
                     showName={true}
                     showIcon={true}
                     userProfileMode="navigation"
@@ -251,7 +251,7 @@ export default function EduGuideLandingPage() {
                 <div className="mt-10 max-w-sm mx-auto sm:flex sm:justify-center md:mt-12">
                   <div className="rounded-md shadow">
                     <a
-                      href="#"
+                      href={user.isSignedIn ?"/home":"https://modern-owl-42.accounts.dev/sign-in?redirect_url=http%3A%2F%2Flocalhost%3A5173%2F"}
                       className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
                     >
                       Get Started

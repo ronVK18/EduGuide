@@ -13,6 +13,7 @@ import Temp from "./pages/Temp"
 import InputData from "./pages/InputData"
 import HomeDashboard from "./pages/Home"
 import Chatbot from "./pages/Chatbot"
+import Roadmap from "./pages/Roadmap"
 
 function App() {
   
@@ -32,6 +33,7 @@ function App() {
       <Route path="/profile" element=<Profile/> />
       <Route path="/input" element=<InputData/> />
       <Route path="/chatbot" element=<Chatbot/> />
+      <Route path="/roadmap" element=<Roadmap/> />
     </Routes>
     </>
   )

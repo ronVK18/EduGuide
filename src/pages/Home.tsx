@@ -19,8 +19,11 @@ import {
   Award,
 } from "lucide-react";
 import Navbar from "./Navbar";
+import { useUser } from "@clerk/clerk-react";
 
 export default function HomeDashboard() {
+  const user=useUser()
+  const name=user?.user?.firstName
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // Determines if user is student or mentor for conditional rendering
   const [userType, setUserType] = useState("student"); // Can be 'student' or 'mentor'
@@ -206,7 +209,7 @@ export default function HomeDashboard() {
                 </div>
                 <div className="ml-5">
                   <h2 className="text-xl font-bold text-white">
-                     Hii {userType === "student" ? "Alex" : "Dr. Chen"}
+                     Hii {name}
                     !
                   </h2>
                   <p className="text-indigo-100 mt-1">
@@ -519,91 +522,7 @@ export default function HomeDashboard() {
                 </div>
               </div>
 
-              {/* YouTube Features */}
-              <div className="mt-8 bg-white shadow rounded-lg">
-                <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
-                  <div>
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
-                      Video Learning Resources
-                    </h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                      Get summaries and quizzes from YouTube videos
-                    </p>
-                  </div>
-                  <Youtube className="h-6 w-6 text-indigo-600" />
-                </div>
-                <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <div className="flex items-center">
-                        <Youtube className="h-5 w-5 text-indigo-600" />
-                        <h4 className="ml-2 text-md font-medium text-gray-900">
-                          Video Summary
-                        </h4>
-                      </div>
-                      <p className="mt-2 text-sm text-gray-500">
-                        Generate concise summaries of career-related YouTube
-                        videos
-                      </p>
-                      <div className="mt-4">
-                        <label
-                          htmlFor="video-url"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Enter YouTube URL
-                        </label>
-                        <div className="mt-1 flex rounded-md shadow-sm">
-                          <input
-                            value={url}
-                            onChange={(e)=>setUrl(e.target.value)}
-                            type="text"
-                            name="video-url"
-                            id="video-url"
-                            className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-gray-300"
-                            placeholder="https://www.youtube.com/watch?v="
-                          />
-                          <button className="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 bg-indigo-600 text-white text-sm font-medium rounded-r-md hover:bg-indigo-700" onClick={summarizer}>
-                            Go
-                          </button>
-                        </div>
-                          <div>{content}</div>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <div className="flex items-center">
-                        <Brain className="h-5 w-5 text-indigo-600" />
-                        <h4 className="ml-2 text-md font-medium text-gray-900">
-                          Quiz Generator
-                        </h4>
-                      </div>
-                      <p className="mt-2 text-sm text-gray-500">
-                        Create interactive quizzes from YouTube videos to test
-                        your knowledge
-                      </p>
-                      <div className="mt-4">
-                        <label
-                          htmlFor="quiz-video-url"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Enter YouTube URL
-                        </label>
-                        <div className="mt-1 flex rounded-md shadow-sm">
-                          <input
-                            type="text"
-                            name="quiz-video-url"
-                            id="quiz-video-url"
-                            className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-gray-300"
-                            placeholder="https://www.youtube.com/watch?v="
-                          />
-                          <button className="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 bg-indigo-600 text-white text-sm font-medium rounded-r-md hover:bg-indigo-700">
-                            Go
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            
             </div>
           ) : (
             /* Mentor Dashboard */
