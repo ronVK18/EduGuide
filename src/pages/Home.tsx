@@ -24,7 +24,11 @@ export default function HomeDashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // Determines if user is student or mentor for conditional rendering
   const [userType, setUserType] = useState("student"); // Can be 'student' or 'mentor'
-
+  const [ats,setAts]=useState(0);
+  const randomAts=()=>{
+    const randomValue = Math.floor(Math.random() * 100) + 1; // Random number between 1 and 100
+    setAts(randomValue);
+  }
   // Mock data for dashboard elements
   const recommendedJobs = [
     {
@@ -156,7 +160,23 @@ export default function HomeDashboard() {
       unread: false,
     },
   ];
+  const [url,setUrl]=useState("")
+  const [content,setContent]=useState("")
+    const summarizer=async ()=>{
+      const res = await fetch('http://127.0.0.1:9000/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question:url
+        }),
+      });
 
+      const data = await res.json();
+      setContent(data.answer)
+      console.log(data.answer)
+    }
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -406,16 +426,14 @@ export default function HomeDashboard() {
                           <div className="flex-1 bg-gray-200 rounded-full h-2.5">
                             <div
                               className="bg-indigo-600 h-2.5 rounded-full"
-                              style={{ width: "85%" }}
+                              style={{ width: `${ats}%` }}
                             ></div>
                           </div>
                           <span className="ml-2 text-sm font-medium text-gray-700">
-                            85/100
+                            {ats}/100
                           </span>
                         </div>
-                        <button className="mt-3 text-sm text-indigo-600 hover:text-indigo-900 font-medium">
-                          View detailed analysis
-                        </button>
+                        
                       </div>
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <h4 className="text-md font-medium text-gray-900">
@@ -424,8 +442,9 @@ export default function HomeDashboard() {
                         <p className="text-sm text-gray-500 mt-1">
                           Compare your resume with job descriptions
                         </p>
-                        <button className="mt-3 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                          Upload Resume
+                        <input type="file" name="file" placeholder="Upload Resume" id="" />
+                        <button className="mt-3 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" onClick={randomAts}>
+                          Analyze
                         </button>
                       </div>
                     </div>
@@ -535,16 +554,19 @@ export default function HomeDashboard() {
                         </label>
                         <div className="mt-1 flex rounded-md shadow-sm">
                           <input
+                            value={url}
+                            onChange={(e)=>setUrl(e.target.value)}
                             type="text"
                             name="video-url"
                             id="video-url"
                             className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-gray-300"
                             placeholder="https://www.youtube.com/watch?v="
                           />
-                          <button className="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 bg-indigo-600 text-white text-sm font-medium rounded-r-md hover:bg-indigo-700">
+                          <button className="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 bg-indigo-600 text-white text-sm font-medium rounded-r-md hover:bg-indigo-700" onClick={summarizer}>
                             Go
                           </button>
                         </div>
+                          <div>{content}</div>
                       </div>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-lg">

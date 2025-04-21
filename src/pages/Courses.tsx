@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
   Search,
@@ -13,15 +14,20 @@ import {
   Target,
   Brain,
   TrendingUp,
-  Filter
+  Filter,
+  DollarSign,
+  ShoppingCart
 } from "lucide-react";
 import Navbar from "./Navbar";
 
 function Course() {
-  // State for course filtering
-  const [filter, setFilter] = useState("all"); // "all", "in-progress", "completed", "saved"
+  // For navigation to payment route
+  const navigate = useNavigate();
   
-  // Sample course data
+  // State for course filtering
+  const [filter, setFilter] = useState("all"); // "all", "in-progress", "completed", "saved", "available"
+  
+  // Sample course data with price information
   const courses = [
     {
       id: 1,
@@ -36,7 +42,9 @@ function Course() {
       status: "in-progress",
       image: "python-data-science",
       description: "Learn Python programming specifically for data analysis, visualization, and machine learning applications.",
-      lastAccessed: "2 days ago"
+      lastAccessed: "2 days ago",
+      price: 49.99,
+      purchased: true
     },
     {
       id: 2,
@@ -51,7 +59,9 @@ function Course() {
       status: "saved",
       image: "resume-building",
       description: "Create a professional resume that stands out to recruiters and hiring managers.",
-      lastAccessed: null
+      lastAccessed: null,
+      price: 29.99,
+      purchased: true
     },
     {
       id: 3,
@@ -66,7 +76,9 @@ function Course() {
       status: "in-progress",
       image: "interview-skills",
       description: "Master the techniques for acing technical and behavioral interviews.",
-      lastAccessed: "Yesterday"
+      lastAccessed: "Yesterday",
+      price: 39.99,
+      purchased: true
     },
     {
       id: 4,
@@ -81,7 +93,9 @@ function Course() {
       status: "completed",
       image: "web-development",
       description: "Learn HTML, CSS, and JavaScript to build your first responsive website.",
-      lastAccessed: "Last week"
+      lastAccessed: "Last week",
+      price: 59.99,
+      purchased: true
     },
     {
       id: 5,
@@ -96,7 +110,9 @@ function Course() {
       status: "in-progress",
       image: "leadership-tech",
       description: "Develop essential leadership skills specifically for technology teams and organizations.",
-      lastAccessed: "3 days ago"
+      lastAccessed: "3 days ago",
+      price: 69.99,
+      purchased: true
     },
     {
       id: 6,
@@ -111,7 +127,39 @@ function Course() {
       status: "completed",
       image: "tableau",
       description: "Create powerful visualizations and dashboards with Tableau.",
-      lastAccessed: "2 weeks ago"
+      lastAccessed: "2 weeks ago",
+      price: 49.99,
+      purchased: true
+    },
+    {
+      id: 7,
+      title: "Advanced Machine Learning",
+      category: "Technical",
+      level: "Advanced",
+      instructor: "Dr. Alex Morgan",
+      rating: 4.9,
+      totalStudents: 1560,
+      duration: "15 hours",
+      price: 89.99,
+      status: "available",
+      image: "machine-learning",
+      description: "Master advanced machine learning algorithms and implementation techniques.",
+      purchased: false
+    },
+    {
+      id: 8,
+      title: "UX Design Principles",
+      category: "Design",
+      level: "Intermediate",
+      instructor: "Sophia Lee",
+      rating: 4.7,
+      totalStudents: 3420,
+      duration: "10 hours",
+      price: 59.99,
+      status: "available",
+      image: "ux-design",
+      description: "Learn user experience design principles and create intuitive digital interfaces.",
+      purchased: false
     }
   ];
 
@@ -120,8 +168,28 @@ function Course() {
     ? courses 
     : courses.filter(course => course.status === filter);
 
+  // Function to handle purchase/payment
+  const handlePurchase = (courseId) => {
+    // Navigate to payment route with course ID
+    navigate(`/payment/${courseId}`);
+  };
+
   // Function to render appropriate course action button based on status
   const renderCourseButton = (course) => {
+    // If the course is not purchased, show Buy button
+    if (!course.purchased) {
+      return (
+        <button 
+          onClick={() => handlePurchase(course.id)}
+          className="mt-4 w-full bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700 flex items-center justify-center"
+        >
+          <ShoppingCart className="h-4 w-4 mr-2" />
+          Buy Now - ${course.price.toFixed(2)}
+        </button>
+      );
+    }
+
+    // For purchased courses
     switch(course.status) {
       case "in-progress":
         return (
@@ -159,26 +227,24 @@ function Course() {
         return <Target className="h-12 w-12 text-indigo-600" />;
       case "Professional Development":
         return <Brain className="h-12 w-12 text-indigo-600" />;
+      case "Design":
+        return <FileText className="h-12 w-12 text-indigo-600" />;
       default:
         return <BookOpen className="h-12 w-12 text-indigo-600" />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 ">
-        <Navbar cur_url="courses"/>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar cur_url="courses"/>
       {/* Page Header */}
       <div className="bg-white shadow px-10 py-5 rounded-lg mb-6">
-
-
       
       <div className="flex justify-between items-center mb-6">
         <div className="">
           <h1 className="text-2xl font-bold text-gray-900">My Courses</h1>
           <p className="text-gray-600 mt-1">Track your progress and continue learning</p>
         </div>
-        
-       
       </div>
       
       {/* Filters */}
@@ -187,7 +253,7 @@ function Course() {
           <Filter className="h-5 w-5 text-gray-500" />
           <span className="font-medium text-gray-700">Filter Courses:</span>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <button 
             onClick={() => setFilter("all")}
             className={`px-4 py-2 rounded-md text-sm font-medium ${
@@ -228,6 +294,16 @@ function Course() {
           >
             Saved for Later
           </button>
+          <button 
+            onClick={() => setFilter("available")}
+            className={`px-4 py-2 rounded-md text-sm font-medium ${
+              filter === "available" 
+                ? "bg-indigo-100 text-indigo-700 border border-indigo-300" 
+                : "bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
+            }`}
+          >
+            Available for Purchase
+          </button>
         </div>
       </div>
       
@@ -248,6 +324,17 @@ function Course() {
                   Completed
                 </div>
               )}
+              {course.status === "available" && (
+                <div className="absolute top-3 right-3 bg-amber-500 text-white text-xs px-2 py-1 rounded-full">
+                  Available
+                </div>
+              )}
+              
+              {/* Price Badge */}
+              <div className="absolute bottom-3 left-3 bg-white text-gray-900 font-medium text-sm px-3 py-1 rounded-full shadow flex items-center">
+                <DollarSign className="h-4 w-4 mr-1 text-green-600" />
+                ${course.price.toFixed(2)}
+              </div>
             </div>
             
             {/* Course Content */}
@@ -279,13 +366,13 @@ function Course() {
                     <Clock className="h-4 w-4 mr-1" />
                     <span>{course.duration}</span>
                   </div>
-                  {course.status !== "saved" && (
+                  {course.purchased && course.status !== "saved" && course.status !== "available" && (
                     <span>{course.progress}% Complete</span>
                   )}
                 </div>
                 
                 {/* Progress Bar */}
-                {course.status !== "saved" && (
+                {course.purchased && course.status !== "saved" && course.status !== "available" && (
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
                       className={`h-2 rounded-full ${
@@ -296,6 +383,14 @@ function Course() {
                   </div>
                 )}
               </div>
+              
+              {/* Purchase Status */}
+              {!course.purchased && (
+                <div className="mt-3 flex items-center text-xs text-amber-600">
+                  <ShoppingCart className="h-4 w-4 mr-1" />
+                  <span>Available for purchase</span>
+                </div>
+              )}
               
               {/* Last Accessed */}
               {course.lastAccessed && (
@@ -336,8 +431,13 @@ function Course() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="h-40 bg-indigo-100 flex items-center justify-center">
+            <div className="h-40 bg-indigo-100 flex items-center justify-center relative">
               <FileText className="h-12 w-12 text-indigo-600" />
+              {/* Price Badge */}
+              <div className="absolute bottom-3 left-3 bg-white text-gray-900 font-medium text-sm px-3 py-1 rounded-full shadow flex items-center">
+                <DollarSign className="h-4 w-4 mr-1 text-green-600" />
+                $34.99
+              </div>
             </div>
             <div className="p-4">
               <div className="flex items-center text-xs text-gray-500 mb-1">
@@ -366,15 +466,24 @@ function Course() {
                 <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
                 <span className="text-xs text-green-500">Matches your career interests</span>
               </div>
-              <button className="mt-4 w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700">
-                Start Course
+              <button 
+                onClick={() => handlePurchase(101)}
+                className="mt-4 w-full bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700 flex items-center justify-center"
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Buy Now - $34.99
               </button>
             </div>
           </div>
           
           <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="h-40 bg-indigo-100 flex items-center justify-center">
+            <div className="h-40 bg-indigo-100 flex items-center justify-center relative">
               <Brain className="h-12 w-12 text-indigo-600" />
+              {/* Price Badge */}
+              <div className="absolute bottom-3 left-3 bg-white text-gray-900 font-medium text-sm px-3 py-1 rounded-full shadow flex items-center">
+                <DollarSign className="h-4 w-4 mr-1 text-green-600" />
+                $45.99
+              </div>
             </div>
             <div className="p-4">
               <div className="flex items-center text-xs text-gray-500 mb-1">
@@ -403,8 +512,62 @@ function Course() {
                 <Award className="h-4 w-4 text-amber-500 mr-1" />
                 <span className="text-xs text-amber-500">Popular in your field</span>
               </div>
-              <button className="mt-4 w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700">
-                Start Course
+              <button 
+                onClick={() => handlePurchase(102)}
+                className="mt-4 w-full bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700 flex items-center justify-center"
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Buy Now - $45.99
+              </button>
+            </div>
+          </div>
+          
+          <div className="bg-white shadow rounded-lg overflow-hidden">
+            <div className="h-40 bg-indigo-100 flex items-center justify-center relative">
+              <Target className="h-12 w-12 text-indigo-600" />
+              {/* Price Badge */}
+              <div className="absolute bottom-3 left-3 bg-white text-gray-900 font-medium text-sm px-3 py-1 rounded-full shadow flex items-center">
+                <DollarSign className="h-4 w-4 mr-1 text-green-600" />
+                $29.99
+              </div>
+              {/* Special Offer Badge */}
+              <div className="absolute top-3 right-3 bg-red-600 text-white text-xs px-2 py-1 rounded-full">
+                20% Off
+              </div>
+            </div>
+            <div className="p-4">
+              <div className="flex items-center text-xs text-gray-500 mb-1">
+                <span className="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded">
+                  Career Development
+                </span>
+                <span className="mx-2">•</span>
+                <span>Beginner</span>
+              </div>
+              <h3 className="font-medium text-gray-900 text-lg">Personal Branding Strategy</h3>
+              <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                Build a strong personal brand that stands out in your industry.
+              </p>
+              <div className="flex items-center justify-between mt-3 text-sm">
+                <span className="text-gray-600">Jessica Wong</span>
+                <div className="flex items-center">
+                  <Star className="h-4 w-4 text-yellow-400 mr-1" />
+                  <span>4.8</span>
+                </div>
+              </div>
+              <div className="flex items-center mt-3 text-sm text-gray-500">
+                <Clock className="h-4 w-4 mr-1" />
+                <span>3 hours</span>
+              </div>
+              <div className="flex items-center mt-2">
+                <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
+                <span className="text-xs text-green-500">Limited time offer</span>
+              </div>
+              <button 
+                onClick={() => handlePurchase(103)}
+                className="mt-4 w-full bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700 flex items-center justify-center"
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Buy Now - $29.99
               </button>
             </div>
           </div>

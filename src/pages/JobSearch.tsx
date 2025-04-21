@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { 
   Search, 
-  Filter, 
   MapPin, 
   Briefcase, 
   Clock, 
   ChevronRight, 
   BookOpen,
-  Filter as FilterIcon,
   X,
   ChevronDown,
   Target,
@@ -15,7 +13,7 @@ import {
   Sliders
 } from 'lucide-react';
 import Navbar from './Navbar';
-import { getJson } from "serpapi";
+
 export default function JobSearch() {
   // User input states
   const [searchPhase, setSearchPhase] = useState('questions'); // 'questions', 'results'
@@ -30,74 +28,11 @@ export default function JobSearch() {
   
   const [skillInput, setSkillInput] = useState('');
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
-  // Mock job results data
+  // Job results state
   const [jobResults, setJobResults] = useState([]);
   
-  // Sample job data
-  const mockJobs = [
-    {
-      id: 1,
-      title: 'Frontend Developer',
-      company: 'TechCorp',
-      location: 'Remote',
-      salary: '$75,000 - $95,000',
-      match: '95%',
-      postedDate: '2 days ago',
-      type: 'Full-time',
-      description: 'We are seeking a skilled Frontend Developer proficient in React to join our dynamic team.',
-      requirements: ['3+ years React experience', 'Strong JavaScript skills', 'UI/UX design knowledge']
-    },
-    {
-      id: 2,
-      title: 'Data Analyst',
-      company: 'Analytics Inc.',
-      location: 'New York, NY',
-      salary: '$65,000 - $85,000',
-      match: '87%',
-      postedDate: '1 week ago',
-      type: 'Full-time',
-      description: 'Looking for a Data Analyst to help derive insights from our growing datasets.',
-      requirements: ['SQL proficiency', 'Data visualization skills', 'Statistics background']
-    },
-    {
-      id: 3,
-      title: 'UX Designer',
-      company: 'DesignHub',
-      location: 'San Francisco, CA',
-      salary: '$80,000 - $110,000',
-      match: '82%',
-      postedDate: '3 days ago',
-      type: 'Full-time',
-      description: 'Join our creative team to design intuitive and engaging user experiences.',
-      requirements: ['Figma expertise', 'User research experience', 'Prototyping skills']
-    },
-    {
-      id: 4,
-      title: 'DevOps Engineer',
-      company: 'CloudSys',
-      location: 'Remote',
-      salary: '$90,000 - $120,000',
-      match: '79%',
-      postedDate: '1 day ago',
-      type: 'Contract',
-      description: 'Help us build and maintain our cloud infrastructure and CI/CD pipelines.',
-      requirements: ['AWS/Azure experience', 'Docker & Kubernetes', 'Infrastructure as Code']
-    },
-    {
-      id: 5,
-      title: 'Product Manager',
-      company: 'InnovateTech',
-      location: 'Boston, MA',
-      salary: '$85,000 - $115,000',
-      match: '76%',
-      postedDate: '5 days ago',
-      type: 'Full-time',
-      description: 'Lead product development efforts in our growing tech company.',
-      requirements: ['3+ years in product management', 'Agile methodologies', 'Technical background']
-    }
-  ];
-
   // Experience levels for dropdown
   const experienceLevels = [
     { value: 'entry', label: 'Entry Level (0-2 years)' },
@@ -166,63 +101,89 @@ export default function JobSearch() {
     }
   };
   
+  // Fetch jobs from the API
+  const fetchJobs = async (searchQuery) => {
+    try {
+      
+      setIsLoading(true);
+      
+      // Create the search query based on user inputs
+      const query = encodeURIComponent(searchQuery);
+      console.log(query);
+      // In a real app, this API call should be made through a backend service to protect your API key
+      const response = await fetch(`http://127.0.0.1:5000/jobs/jobs?q=${query}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch jobs');
+      }
+      
+      const data = await response.json();
+      return data.jobs || [];
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Format SerpAPI job results to match our UI structure
+  const formatJobResults = (apiJobs) => {
+    return apiJobs.map((job, index) => {
+      // Extract salary information if available
+      const salary = job.detected_extensions?.salary || 'Salary not specified';
+      
+      // Calculate a "match" percentage based on skills (simulated)
+      // In a real app, you would implement a proper matching algorithm
+      const matchPercentage = Math.floor(Math.random() * 20) + 80; // Random score between 80-99%
+      
+      return {
+        id: index,
+        title: job.title || 'Job Title Not Available',
+        company: job.company_name || 'Company Not Specified',
+        location: job.location || 'Location Not Specified',
+        salary: salary,
+        match: `${matchPercentage}%`,
+        postedDate: job.detected_extensions?.posted_at || 'Recently',
+        type: job.detected_extensions?.schedule_type || 'Not Specified',
+        description: job.description || 'No description available',
+        requirements: job.job_highlights?.[0]?.items || 
+                      job.job_highlights?.requirements?.[0]?.items || 
+                      ['Requirements not specified'],
+        applyLink: job.apply_options[0]['link'] || '#'
+      };
+    });
+  };
+  
   // Submit the form and show results
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Filter and sort mock jobs based on user inputs to simulate personalized results
-    let filteredJobs = [...mockJobs];
     
-    // Filter by location if specified
+    let searchQuery = formInputs.jobTitle || 'jobs';
+    
     if (formInputs.location) {
-      filteredJobs = filteredJobs.filter(job => 
-        job.location.toLowerCase().includes(formInputs.location.toLowerCase())
-      );
+      searchQuery += ` in ${formInputs.location}`;
     }
     
-    // Filter by job type if specified
     if (formInputs.workType) {
-      filteredJobs = filteredJobs.filter(job => 
-        job.type.toLowerCase().includes(formInputs.workType.toLowerCase())
-      );
+      const workTypeLabel = workTypes.find(type => type.value === formInputs.workType)?.label;
+      if (workTypeLabel) searchQuery += ` ${workTypeLabel}`;
     }
     
-    // Simple ranking algorithm - prioritize jobs that match skills
-    filteredJobs = filteredJobs.map(job => {
-      // Calculate a match score based on how many skills match
-      let matchScore = parseInt(job.match);
-      
-      // Boost score if job title matches search
-      if (formInputs.jobTitle && job.title.toLowerCase().includes(formInputs.jobTitle.toLowerCase())) {
-        matchScore += 10;
-      }
-      
-      // Cap at 100%
-      matchScore = Math.min(matchScore, 100);
-      
-      return {
-        ...job,
-        match: `${matchScore}%`
-      };
-    });
+    // Add top skills to search query (limited to 3 to keep query focused)
+    if (formInputs.skills.length > 0) {
+      searchQuery += ` ${formInputs.skills.slice(0, 3).join(' ')}`;
+    }
     
-    // Sort by match percentage (descending)
-    filteredJobs.sort((a, b) => {
-      const aMatch = parseInt(a.match);
-      const bMatch = parseInt(b.match);
-      return bMatch - aMatch;
-    });
+    // Fetch jobs based on search query
+    const apiJobs = await fetchJobs(searchQuery);
+    console.log(apiJobs)
+    const formattedJobs = formatJobResults(apiJobs);
+    console.log(formattedJobs)
     
-    setJobResults(filteredJobs);
+    setJobResults(formattedJobs);
     setSearchPhase('results');
-    await getJson({
-      engine: "google_jobs",
-      q: "software engineer remote Full Time React Nodejs",
-      hl: "en",
-      api_key: "8ac7c70d7d46d0c3dc5ce2627034f45ec29c1fdfbfc055eb200e2790e8a3b3d5"
-    }, (json) => {
-      console.log(json["jobs_results"]);
-    });
   };
   
   // Go back to questions form
@@ -231,7 +192,7 @@ export default function JobSearch() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 ">
+    <div className="min-h-screen bg-gray-50">
       <Navbar cur_url='jobs'/>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
         {/* Page Header */}
@@ -415,9 +376,16 @@ export default function JobSearch() {
                 <button
                   type="submit"
                   className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  disabled={isLoading}
                 >
-                  Find Matching Jobs
-                  <ChevronRight className="ml-2 h-5 w-5" />
+                  {isLoading ? (
+                    "Searching..."
+                  ) : (
+                    <>
+                      Find Matching Jobs
+                      <ChevronRight className="ml-2 h-5 w-5" />
+                    </>
+                  )}
                 </button>
               </div>
             </form>
@@ -489,8 +457,9 @@ export default function JobSearch() {
                     <button
                       onClick={handleSubmit}
                       className="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 flex items-center justify-center text-sm font-medium text-white hover:bg-indigo-700"
+                      disabled={isLoading}
                     >
-                      Apply Filters
+                      {isLoading ? "Applying..." : "Apply Filters"}
                     </button>
                   </div>
                 </div>
@@ -499,7 +468,11 @@ export default function JobSearch() {
             
             {/* Job Listings */}
             <div className="space-y-4">
-              {jobResults.length > 0 ? (
+              {isLoading ? (
+                <div className="bg-white shadow rounded-lg p-6 text-center">
+                  <p className="text-gray-500 text-lg">Loading jobs...</p>
+                </div>
+              ) : jobResults.length > 0 ? (
                 jobResults.map((job) => (
                   <div key={job.id} className="bg-white shadow rounded-lg overflow-hidden">
                     <div className="p-6">
@@ -547,12 +520,14 @@ export default function JobSearch() {
                       </div>
                       
                       <div className="mt-5 flex justify-end">
-                        <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                          View Details
-                        </button>
-                        <button className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <a 
+                          href={job.applyLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
                           Apply Now
-                        </button>
+                        </a>
                       </div>
                     </div>
                   </div>

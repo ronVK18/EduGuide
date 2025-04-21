@@ -29,7 +29,22 @@ const VideoSummaryGenerator = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [content, setContent] = useState('');
+    const summarizer=async ()=>{
+      const res = await fetch('http://127.0.0.1:9000/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question:youtubeUrl
+        }),
+      });
 
+      const data = await res.json();
+      setSummary(data.answer)
+      // console.log(data.answer)
+    }
   // Function to extract YouTube video ID from URL
   const extractVideoId = (url) => {
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
@@ -118,6 +133,7 @@ The presenter emphasizes the importance of continuous learning and staying curre
             <button
               type="submit"
               disabled={loading}
+              onClick={summarizer}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
             >
               {loading ? (
@@ -185,7 +201,22 @@ const VideoQuizGenerator = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
+  const summarizer=async ()=>{
+    const res = await fetch('http://127.0.0.1:9000/quiz', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        question:youtubeUrl
+      }),
+    });
 
+    const data = await res.json();
+    // setSummary(data.answer)
+    return data.answer
+    console.log(data.answer)
+  }
   // Function to extract YouTube video ID from URL
   const extractVideoId = (url) => {
     const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
@@ -214,8 +245,8 @@ const VideoQuizGenerator = () => {
 
     try {
       // Make API request to your backend service
-      const response = await fetchVideoQuiz(videoId);
-      setQuiz(response.quiz);
+      const response = await summarizer();
+      setQuiz(response);
       setSuccess(true);
       setLoading(false);
     } catch (err) {
@@ -283,7 +314,7 @@ const VideoQuizGenerator = () => {
   };
 
   const handleAnswerClick = (selectedOption) => {
-    if (selectedOption === quiz.questions[currentQuestion].correctAnswer) {
+    if (selectedOption+1 === quiz.questions[currentQuestion].correctAnswer) {
       setScore(score + 1);
     }
 
@@ -331,6 +362,7 @@ const VideoQuizGenerator = () => {
               <button
                 type="submit"
                 disabled={loading}
+                onClick={summarizer}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
               >
                 {loading ? (

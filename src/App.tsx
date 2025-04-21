@@ -9,6 +9,10 @@ import Navbar from "./pages/Navbar"
 import Profile from "./pages/Profile"
 import Course from "./pages/Courses"
 import Chat from "./pages/Chat"
+import Temp from "./pages/Temp"
+import InputData from "./pages/InputData"
+import HomeDashboard from "./pages/Home"
+import Chatbot from "./pages/Chatbot"
 
 function App() {
   
@@ -23,8 +27,11 @@ function App() {
       <Route path="/video" element=<VideoCall/> />
       <Route path="/chat" element=<Chat/> />
       <Route path="/courses" element=<Course/> />
+      <Route path="/temp" element=<Temp/> />
       <Route path="/mentors" element=<Mentor/> />
       <Route path="/profile" element=<Profile/> />
+      <Route path="/input" element=<InputData/> />
+      <Route path="/chatbot" element=<Chatbot/> />
     </Routes>
     </>
   )
