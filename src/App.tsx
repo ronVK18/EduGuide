@@ -14,6 +14,8 @@ import InputData from "./pages/InputData"
 import HomeDashboard from "./pages/Home"
 import Chatbot from "./pages/Chatbot"
 import Roadmap from "./pages/Roadmap"
+import Payment from "./pages/payment"
+import Failed from "./pages/Failed"
 
 function App() {
   
@@ -34,6 +36,8 @@ function App() {
       <Route path="/input" element=<InputData/> />
       <Route path="/chatbot" element=<Chatbot/> />
       <Route path="/roadmap" element=<Roadmap/> />
+      <Route path="/payment" element=<Payment/> />
+      <Route path="/failed" element=<Failed/> />
     </Routes>
     </>
   )

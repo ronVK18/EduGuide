@@ -5,12 +5,17 @@ import Navbar from "./Navbar";
 
 export default function Roadmap() {
   const [selectedLanguage, setSelectedLanguage] = useState(null);
-  const [url,setUrl] = useState("");
+  const [url,setUrl] = useState("http://www.plantuml.com/plantuml/img/PLB1JiCm3BtlAtpkWMyOQwaGGcnQ9-vkQafOQaUkip6-7ZNj1eXJxFVYf-UNh4T3jS5pDs1S5V249soS-cYhee0wSOS3iM4OLqLHG7DXmyzSLcW8XqkacNb5zTY6fIk5JIL0OvgS9SqmFFjMKJsDWDn1hJZGMVGuZ-m9dUNgdliKK6VPH7SVURYY4mM9aniuY2o6NgHRBXJ0SSZd1biAqyY6HeETeZFlRiOwWgtsoFuBpGjdj4xifWQ3jmiq555_o0TLKNX4xeBdVj8jKOaKTcZlisgjmaRSNKsIBaRSyJzQfp05W-xuXu0zZPBqQhGIbtBoDn-7PAB--X9R3fu9IaawpkcMxnW2SRy8R5JE8ocKCaGqt_ffjypiIDz41sH7i8tcXzzHLDIclfyMNHDtoyVu1W00");
   const fetchData =async (id) => {
     setSelectedLanguage(id);
-    const data=programmingLanguages.find((language) => language.id === id);
-    setUrl(data.url)
-   
+    // const data=programmingLanguages.find((language) => language.id === id);
+    // setUrl(data.url)
+    const response=await axios.post("http://localhost:5000/roadmap",{
+        "topicName":id
+    })
+    const data1=await response.data;
+    setUrl(data1.data.url)
+    // console.log(data1.data.url);
   }
   const programmingLanguages = [
     {

@@ -129,7 +129,7 @@ export default function EduGuideLandingPage() {
               <SignedOut>
                 <div className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium  bg-white hover:bg-gray-100">
                   <SignInButton 
-                    forceRedirectUrl={'/home'}
+                    forceRedirectUrl={'/input'}
                   />
                 </div>
               </SignedOut>

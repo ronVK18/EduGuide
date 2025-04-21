@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   User, 
   Mail, 
@@ -18,13 +18,53 @@ import {
 } from 'lucide-react';
 import { useUser } from '@clerk/clerk-react';
 
-export default function Profile() {
+export default  function Profile() {
   const [activeTab, setActiveTab] = useState('overview');
   const user=useUser();
+  const dataFetching=async()=>{
+    const email=user.user?.emailAddresses[0].emailAddress
+    const response=await fetch(`http://localhost:5000/api/profiles/${email}`)
+    const data=await response.json()
+    console.log(data)
+    const newData={
+      name: user.user?.fullName,
+      email: user.user?.emailAddresses[0].emailAddress,
+      phone: data.profile.personalInfo.phone,
+      location:  data.profile.personalInfo.location,
+      joinDate: date?.toDateString(),
+      resumeScore: 85,
+      bio:data.profile.bio,
+      profileCompletion: 90,
+      skills: data.profile.skills,
+      education: data.profile.education,
+      certifications: data.profile.certifications,
+      careerGoals: data.profile.careerGoals,
+      recentCourses: [
+        { title: "Python for Data Science", progress: 75, lastAccessed: "2 days ago" },
+        { title: "Interview Skills Mastery", progress: 50, lastAccessed: "1 week ago" },
+        { title: "Resume Building Workshop", progress: 100, lastAccessed: "3 weeks ago" }
+      ],
+      mentorSessions: [
+        { title: "Career Strategy Session", mentor: "Dr. Emily Chen", date: "April 18, 2025", feedback: "Great progress on defining career goals." },
+        { title: "Technical Interview Prep", mentor: "Michael Johnson", date: "April 10, 2025", feedback: "Need more practice with algorithm problems." },
+        { title: "Resume Review", mentor: "Sarah Williams", date: "March 30, 2025", feedback: "Excellent improvements to resume structure." }
+      ]
+    }
+    setTimeout(()=>{
+      setUserData(newData)
+        console.log(newData)
+    },1)
+  }
+  // useEffect(()=>{
+  //   dataFetching()
+  // },[])
+  setInterval(()=>{
+    dataFetching()
+  },4000)
   const date=user.user?.createdAt
-  console.log(date?.toDateString)
+  // console.log(date?.toDateString)
   // Mock user data
-  const userData = {
+  const [userData, setUserData] = useState({
     name: user.user?.fullName,
     email: user.user?.emailAddresses[0].emailAddress,
     phone: "+1 (555) 123-4567",
@@ -74,10 +114,12 @@ export default function Profile() {
       { title: "Technical Interview Prep", mentor: "Michael Johnson", date: "April 10, 2025", feedback: "Need more practice with algorithm problems." },
       { title: "Resume Review", mentor: "Sarah Williams", date: "March 30, 2025", feedback: "Excellent improvements to resume structure." }
     ]
-  };
+  })
+  
 
   return (
     <div className="min-h-screen bg-gray-50">
+      
       {/* Header with profile summary */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -91,16 +133,7 @@ export default function Profile() {
                 <p className="text-md text-gray-500">Student</p>
               </div>
             </div>
-            <div className="mt-4 md:mt-0 flex space-x-3">
-              <button className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <Edit className="mr-2 h-4 w-4" />
-                Edit Profile
-              </button>
-              <button className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <FileText className="mr-2 h-4 w-4" />
-                View Resume
-              </button>
-            </div>
+            
           </div>
           
           {/* Profile completion bar */}

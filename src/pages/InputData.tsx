@@ -11,9 +11,10 @@ import {
   Trash2,
   Save
 } from 'lucide-react';
-import { redirect } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 
 export default function InputData() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     personalInfo: {
       name: "",
@@ -117,11 +118,11 @@ const handleSubmit = async (e) => {
       // Show success message
       setFormSubmitted(true);
       console.log("Profile saved successfully:", data);
-      redirect('/home')
+      navigate('/home')
       // Reset form submission status after 3 seconds
-      setTimeout(() => {
-        setFormSubmitted(false);
-      }, 3000);
+      // setTimeout(() => {
+      //   setFormSubmitted(false);
+      // }, 3000);
     } catch (error) {
       // Handle errors
       console.error("Error saving profile:", error);

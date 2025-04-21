@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   BookOpen,
   Search,
@@ -19,15 +19,16 @@ import {
   ShoppingCart
 } from "lucide-react";
 import Navbar from "./Navbar";
-
-function Course() {
+import axios from "axios";
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+ function Course() {
   // For navigation to payment route
   const navigate = useNavigate();
-  
-  // State for course filtering
-  const [filter, setFilter] = useState("all"); // "all", "in-progress", "completed", "saved", "available"
-  
-  // Sample course data with price information
+
+  const query = useQuery();
+  const price = query.get('price');
   const courses = [
     {
       id: 1,
@@ -162,6 +163,42 @@ function Course() {
       purchased: false
     }
   ];
+  // console.log(price);
+  const changes=async ()=>{
+    setTimeout(()=>{
+      console.log(price);
+      if(price){
+        const course=courses.find((course) => course.price == price);
+        console.log(course);
+        courses.map((c)=>{
+          if(c.id==course.id){
+            c.purchased=true;
+            c.status="in-progress";
+          }
+        })
+      }
+    },3000)
+  }
+  useEffect(()=>{
+    changes();
+  },[changes])
+  const handlePayment = async (e,price) => {
+    e.preventDefault();
+    console.log(price);
+    try {
+      const res = await axios.get(`http://localhost:5000/payment?price=${price}`);
+
+      if (res && res.data) {
+        window.location.href = res.data.links[1].href;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  // State for course filtering
+  const [filter, setFilter] = useState("all"); // "all", "in-progress", "completed", "saved", "available"
+  
+  // Sample course data with price information
 
   // Filter courses based on selected filter
   const filteredCourses = filter === "all" 
@@ -180,7 +217,7 @@ function Course() {
     if (!course.purchased) {
       return (
         <button 
-          onClick={() => handlePurchase(course.id)}
+          onClick={(e)=>handlePayment(e,course.price)}
           className="mt-4 w-full bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700 flex items-center justify-center"
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
@@ -467,7 +504,7 @@ function Course() {
                 <span className="text-xs text-green-500">Matches your career interests</span>
               </div>
               <button 
-                onClick={() => handlePurchase(101)}
+                onClick={(e)=>handlePayment(e,"34.99")}
                 className="mt-4 w-full bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700 flex items-center justify-center"
               >
                 <ShoppingCart className="h-4 w-4 mr-2" />
@@ -513,7 +550,7 @@ function Course() {
                 <span className="text-xs text-amber-500">Popular in your field</span>
               </div>
               <button 
-                onClick={() => handlePurchase(102)}
+                onClick={(e)=>handlePayment(e,"45.99")}
                 className="mt-4 w-full bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700 flex items-center justify-center"
               >
                 <ShoppingCart className="h-4 w-4 mr-2" />
@@ -563,7 +600,7 @@ function Course() {
                 <span className="text-xs text-green-500">Limited time offer</span>
               </div>
               <button 
-                onClick={() => handlePurchase(103)}
+                onClick={(e)=>handlePayment(e,"29.99")}
                 className="mt-4 w-full bg-green-600 border border-transparent rounded-md shadow-sm py-2 px-4 text-sm font-medium text-white hover:bg-green-700 flex items-center justify-center"
               >
                 <ShoppingCart className="h-4 w-4 mr-2" />
