@@ -36,7 +36,7 @@ export default function Mentor() {
   const mentors = [
     {
       id: 1,
-      name: "Dr. Emily Chen",
+      name: "Dev Patel",
       title: "Career Strategist & Tech Leadership Coach",
       rating: 4.9,
       reviewCount: 127,
@@ -52,7 +52,7 @@ export default function Mentor() {
     },
     {
       id: 2,
-      name: "Michael Johnson",
+      name: "Dhruv Patel",
       title: "Software Engineering Mentor",
       rating: 4.8,
       reviewCount: 94,
@@ -68,7 +68,7 @@ export default function Mentor() {
     },
     {
       id: 3,
-      name: "Sarah Williams",
+      name: "Dhruvi Shah",
       title: "UX/UI Design Coach",
       rating: 4.9,
       reviewCount: 78,
@@ -84,7 +84,7 @@ export default function Mentor() {
     },
     {
       id: 4,
-      name: "Robert Lee",
+      name: "Satyajit Parhi",
       title: "Data Science & AI Specialist",
       rating: 4.7,
       reviewCount: 62,
@@ -100,7 +100,7 @@ export default function Mentor() {
     },
     {
       id: 5,
-      name: "Lisa Martinez",
+      name: "Kashyap Patel",
       title: "Product Management Coach",
       rating: 4.8,
       reviewCount: 85,
@@ -116,7 +116,7 @@ export default function Mentor() {
     },
     {
       id: 6,
-      name: "James Wilson",
+      name: "Yug Shah",
       title: "Startup Advisor & Entrepreneur",
       rating: 4.9,
       reviewCount: 58,
